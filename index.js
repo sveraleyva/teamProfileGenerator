@@ -5,6 +5,20 @@ const jest = require("jest");
 const inquirer = require("inquirer");
 const team = [];
 
+// Generate HTML
+const generateHTML = (team) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Profile Builder</title>
+</head>
+<body>
+<div>${team} </div>
+</body>
+</html>`;
+
 //
 const managerQuestions = [
   {
@@ -28,39 +42,44 @@ const managerQuestions = [
     name: "managerON",
   },
 ];
-
-const employeeQuestions = [
+const engineerQuestions = [
   {
     type: "input",
-    message: "What is the employee's name?",
+    message: "What is the engineer's name?",
     name: "employeeName",
   },
   {
     type: "integer",
-    message: "What is the employee's employee ID?",
+    message: "What is the engineer's employee ID?",
     name: "employeeID",
   },
   {
     type: "input",
-    message: "What is the employee's email address?",
+    message: "What is the engineer's email address?",
     name: "employeeEmail",
   },
-];
-
-const engineerQuestions = [
-  {
-    type: "input",
-    message: "What's the engineer's github?",
-    name: "engineerGithub",
-  },
   {
     type: "input",
     message: "What's the engineer's github?",
     name: "engineerGithub",
   },
 ];
-
 const internQuestions = [
+  {
+    type: "input",
+    message: "What is the intern's name?",
+    name: "employeeName",
+  },
+  {
+    type: "integer",
+    message: "What is the intern's employee ID?",
+    name: "employeeID",
+  },
+  {
+    type: "input",
+    message: "What is the intern's email address?",
+    name: "employeeEmail",
+  },
   {
     type: "input",
     message: "What's the inters's school?",
@@ -68,11 +87,10 @@ const internQuestions = [
   },
 ];
 
-// function to create manager
-function createManager() {
+function init() {
   inquirer.prompt(managerQuestions).then((response) => {
-    console.log(response);
-    // push manager onto team array
+    let manager = response;
+    team.push(manager);
     createTeam();
   });
 }
@@ -86,12 +104,13 @@ function createTeam() {
       choices: ["Intern", "Engineer", "Finish"],
     })
     .then((response) => {
-      console.log(response);
-      if (response === "Engineer") {
-        createEngineer();
-      } else if (response === "Intern") {
-        createIntern();
+      let type = response.main;
+      if (type === "Engineer") {
+        createEmployee("engineer");
+      } else if (type === "Intern") {
+        createEmployee("intern");
       } else {
+        console.log("final team", team);
         const parseHTML = generateHTML(response);
         fs.writeFile("team.html", parseHTML, (err) =>
           err ? console.error(err) : console.log("Success!")
@@ -100,48 +119,21 @@ function createTeam() {
     });
 }
 
-// Generate HTML
-const generateHTML = (team) => `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Profile Builder</title>
-</head>
-<body>
-<div>${managerName} </div>
-<div>${managerID} </div>
-<div>${managerEmail} </div>
-<div>${managerNumber} </div>
-</body>
-</html>`;
-
-// Ask Questions to Populate HTML
-// function to write team roster file
-function writeToFile(fileName, data) {
-  const markdown = generateMarkdown(data);
-  return fs.writeFileSync(fileName, markdown);
+// create employee function can only be used for intern or engineer
+function createEmployee(employeeType) {
+  if (employeeType === "intern") {
+    inquirer.prompt(internQuestions).then((response) => {
+      let intern = response;
+      team.push(intern);
+      createTeam();
+    });
+  } else {
+    inquirer.prompt(engineerQuestions).then((response) => {
+      let engineer = response;
+      team.push(engineer);
+      createTeam();
+    });
+  }
 }
-
-function init() {
-  inquirer.prompt(managerQuestions).then((response) => {
-    console.log(response);
-  });
-}
-
-// function to initialize app
-// function init() {
-//   inquire.prompt(managerQuestions).then((response) => {
-//     console.log(response);
-//     if (managerQuestions.main = "Intern") {
-//       inquire.prompt(employeeQuestions).then((response) => {
-//         console.log(response);
-//       inquire.prompt(internQuestions).then((response) => {
-//         console.log(response);
-//     }
-//     writeToFile("roster.html", response);
-//   });
-// }
 
 init();
