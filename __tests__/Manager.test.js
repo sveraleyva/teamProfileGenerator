@@ -1,6 +1,5 @@
 const Manager = require("../lib/Manager");
 const Employee = require("../lib/Employee");
-const { exportAllDeclaration } = require("@babel/types");
 
 test("office number can be entered with the constructor", () => {
   const testValue = 123;
