@@ -9,7 +9,7 @@ test("office number can be entered with the constructor", () => {
 
 test("getOffice() should return office number", () => {
   const testValue = 123;
-  const e = new Manager("Foo", testValue, "test@test.com", "Manager");
+  const e = new Manager("Foo", 1, "test@test.com", testValue);
   expect(e.getOfficeNumber()).toBe(testValue);
 });
 

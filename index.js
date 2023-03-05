@@ -1,25 +1,14 @@
 // packages needed for this application
-const inquire = require("inquirer");
+const inquirer = require("inquirer");
 const fs = require("fs");
 const jest = require("jest");
-const inquirer = require("inquirer");
 const team = [];
+const Employee = require("./lib/Employee");
+const Manager = require("./lib/Manager");
+const Engineer = require("./lib/Engineer");
+const Intern = require("./lib/Intern");
 
-// Generate HTML
-const generateHTML = (team) => `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Profile Builder</title>
-</head>
-<body>
-<div>${team} </div>
-</body>
-</html>`;
-
-//
+// questions
 const managerQuestions = [
   {
     type: "input",
@@ -87,9 +76,34 @@ const internQuestions = [
   },
 ];
 
-function init() {
+// Generate HTML
+// next step -> parse object and make separate html objects for each member
+const generateHTML = (team) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Profile Builder</title>
+</head>
+<body>
+
+<div>${team[0].getName()}</div>
+<div>${team[0].getID()}</div>
+<div>${team[0].getEmail()}</div>
+<div>${team[0].getOfficeNumber()}</div>
+
+</body>
+</html>`;
+
+function createManager() {
   inquirer.prompt(managerQuestions).then((response) => {
-    let manager = response;
+    const manager = new Manager(
+      response.managerName,
+      response.managerID,
+      response.managerEmail,
+      response.managerON
+    );
     team.push(manager);
     createTeam();
   });
@@ -111,7 +125,7 @@ function createTeam() {
         createEmployee("intern");
       } else {
         console.log("final team", team);
-        const parseHTML = generateHTML(response);
+        const parseHTML = generateHTML(team);
         fs.writeFile("team.html", parseHTML, (err) =>
           err ? console.error(err) : console.log("Success!")
         );
@@ -123,17 +137,31 @@ function createTeam() {
 function createEmployee(employeeType) {
   if (employeeType === "intern") {
     inquirer.prompt(internQuestions).then((response) => {
-      let intern = response;
+      const intern = new Intern(
+        response.employeeName,
+        response.employeeID,
+        response.employeeEmail,
+        response.internSchool
+      );
       team.push(intern);
       createTeam();
     });
   } else {
     inquirer.prompt(engineerQuestions).then((response) => {
-      let engineer = response;
+      const engineer = new Engineer(
+        response.employeeName,
+        response.employeeID,
+        response.employeeEmail,
+        response.engineerGithub
+      );
       team.push(engineer);
       createTeam();
     });
   }
+}
+
+function init() {
+  createManager();
 }
 
 init();
