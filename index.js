@@ -78,23 +78,64 @@ const internQuestions = [
 
 // Generate HTML
 // next step -> parse object and make separate html objects for each member
-const generateHTML = (team) => `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Profile Builder</title>
-</head>
-<body>
+const generateHTML = (team) => {
+  let engineerTemplate = "";
+  let internTemplate = "";
 
-<div>${team[0].getName()}</div>
-<div>${team[0].getID()}</div>
-<div>${team[0].getEmail()}</div>
-<div>${team[0].getOfficeNumber()}</div>
+  // manager section
+  const managerTemplate = `<div class="managerCard">
+  <div>${team[0].getName()}</div>
+  <div>${team[0].getID()}</div>
+  <div>${team[0].getEmail()}</div>
+  <div>${team[0].getOfficeNumber()}</div>
+  </div>`;
 
-</body>
-</html>`;
+  // get all engineers/interns in different arrays
+  const engineers = team.filter(
+    (employee) => employee.getRole() === "Engineer"
+  );
+  const interns = team.filter((employee) => employee.getRole() === "Intern");
+
+  // loop through the arrays to make separate engineer/intern cards on HTML, unless there are none in the team
+  if (engineers.length > 0) {
+    engineers.forEach((engineer) => {
+      engineerTemplate += `<div class="engineerCard"> 
+      <div>${engineer.getName()}</div>
+      <div>${engineer.getID()}</div>
+      <div>${engineer.getEmail()}</div>
+      <div>${engineer.getGithub()}</div>
+      </div>`;
+    });
+  }
+
+  if (interns.length > 0) {
+    interns.forEach((intern) => {
+      internTemplate += `<div class="internCard"> 
+      <div>${intern.getName()}</div>
+      <div>${intern.getID()}</div>
+      <div>${intern.getEmail()}</div>
+      <div>${intern.getSchool()}</div>
+      </div>`;
+    });
+  }
+
+  const document = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Team Profile Builder</title>
+  </head>
+  <body>
+  ${managerTemplate}
+  ${engineerTemplate}
+  ${internTemplate}
+  </body>
+  </html>`;
+
+  return document;
+};
 
 function createManager() {
   inquirer.prompt(managerQuestions).then((response) => {
@@ -124,7 +165,7 @@ function createTeam() {
       } else if (type === "Intern") {
         createEmployee("intern");
       } else {
-        console.log("final team", team);
+        // make HTML file
         const parseHTML = generateHTML(team);
         fs.writeFile("team.html", parseHTML, (err) =>
           err ? console.error(err) : console.log("Success!")
