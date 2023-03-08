@@ -83,11 +83,12 @@ const generateHTML = (team) => {
   let internTemplate = "";
 
   // manager section
-  const managerTemplate = `<div class="managerCard">
+  const managerTemplate = `<div class="max-w-sm p-6 bg-white border border-[#7c3238] rounded-lg shadow-[#7c3238]">
   <div>${team[0].getName()}</div>
-  <div>${team[0].getID()}</div>
-  <div>${team[0].getEmail()}</div>
-  <div>${team[0].getOfficeNumber()}</div>
+  <div class="text-sm text-gray-500">Manager</div>
+  <div>ID: ${team[0].getID()}</div>
+  <div>Email: ${team[0].getEmail()}</div>
+  <div>School: ${team[0].getOfficeNumber()}</div>
   </div>`;
 
   // get all engineers/interns in different arrays
@@ -99,22 +100,24 @@ const generateHTML = (team) => {
   // loop through the arrays to make separate engineer/intern cards on HTML, unless there are none in the team
   if (engineers.length > 0) {
     engineers.forEach((engineer) => {
-      engineerTemplate += `<div class="engineerCard"> 
-      <div>${engineer.getName()}</div>
-      <div>${engineer.getID()}</div>
-      <div>${engineer.getEmail()}</div>
-      <div>${engineer.getGithub()}</div>
+      engineerTemplate += `<div class="max-w-sm m-2 p-6 bg-white border border-[#b7245c] rounded-lg shadow-[#b7245c]"> 
+      <div class="mb-1 text-xl font-medium text-gray-900">${engineer.getName()}</div>
+      <div class="text-sm text-gray-500">Engineer</div>
+      <div>ID: ${engineer.getID()}</div>
+      <div>Email: ${engineer.getEmail()}</div>
+      <a href="https://github.com/${engineer.getGithub()}">Github: ${engineer.getGithub()}
       </div>`;
     });
   }
 
   if (interns.length > 0) {
     interns.forEach((intern) => {
-      internTemplate += `<div class="internCard"> 
+      internTemplate += `<div class="max-w-sm m-2 p-6 bg-white border border-[#002500] rounded-lg shadow-[#002500]"> 
       <div>${intern.getName()}</div>
-      <div>${intern.getID()}</div>
-      <div>${intern.getEmail()}</div>
-      <div>${intern.getSchool()}</div>
+      <div class="text-sm text-gray-500">Intern</div>
+      <div>ID: ${intern.getID()}</div>
+      <div>Email: ${intern.getEmail()}</div>
+      <div>School: ${intern.getSchool()}</div>
       </div>`;
     });
   }
@@ -125,12 +128,22 @@ const generateHTML = (team) => {
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://cdn.tailwindcss.com"></script>
       <title>Team Profile Builder</title>
   </head>
-  <body>
-  ${managerTemplate}
-  ${engineerTemplate}
-  ${internTemplate}
+  <body class="font-serif text-base">
+    <nav class="p-3 border-white rounded bg-green-50">
+    <div class="container flex flex-wrap items-center justify-center mx-auto">
+      <h1 class="text-left mb-2 text-xl font-extrabold md:text-2xl lg:text-3xl">
+      <a class="uppercase text-transparent bg-clip-text tracking-wider bg-gradient-to-r from-[#002500] via-[#929982] to-[#002500]" href="/">YOUR TEAM</a>
+      </h1>
+    </div>
+    </nav>
+    <div class="flex flex-col flex-wrap justify-center mx-auto mt-3">
+      <div class="flex flex-row flex-wrap justify-center m-3">${managerTemplate}</div>
+      <div class="flex flex-row flex-wrap justify-center m-3">${engineerTemplate}</div>
+      <div class="flex flex-row flex-wrap justify-center m-3">${internTemplate}</div>
+    </div>
   </body>
   </html>`;
 
