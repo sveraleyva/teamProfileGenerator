@@ -8,7 +8,7 @@ const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
 
-// questions
+// questions arrays
 const managerQuestions = [
   {
     type: "input",
@@ -77,17 +77,19 @@ const internQuestions = [
 ];
 
 // Generate HTML
-// next step -> parse object and make separate html objects for each member
 const generateHTML = (team) => {
   let engineerTemplate = "";
   let internTemplate = "";
 
   // manager section
+  let managerEmail = team[0].getEmail();
   const managerTemplate = `<div class="max-w-sm p-6 bg-white border border-[#7c3238] rounded-lg shadow-[#7c3238]">
   <div>${team[0].getName()}</div>
   <div class="text-sm text-gray-500">Manager</div>
   <div>ID: ${team[0].getID()}</div>
-  <div>Email: ${team[0].getEmail()}</div>
+  <div>
+    <a href="mailto:${managerEmail}">Email: ${team[0].getEmail()}</a>
+  </div>
   <div>School: ${team[0].getOfficeNumber()}</div>
   </div>`;
 
@@ -100,11 +102,12 @@ const generateHTML = (team) => {
   // loop through the arrays to make separate engineer/intern cards on HTML, unless there are none in the team
   if (engineers.length > 0) {
     engineers.forEach((engineer) => {
+      let engineerEmail = engineer.getEmail();
       engineerTemplate += `<div class="max-w-sm m-2 p-6 bg-white border border-[#b7245c] rounded-lg shadow-[#b7245c]"> 
       <div class="mb-1 text-xl font-medium text-gray-900">${engineer.getName()}</div>
       <div class="text-sm text-gray-500">Engineer</div>
       <div>ID: ${engineer.getID()}</div>
-      <div>Email: ${engineer.getEmail()}</div>
+      <div><a href="mailto:${engineerEmail}">Email: ${engineer.getEmail()}</a></div>
       <a href="https://github.com/${engineer.getGithub()}">Github: ${engineer.getGithub()}
       </div>`;
     });
@@ -112,16 +115,17 @@ const generateHTML = (team) => {
 
   if (interns.length > 0) {
     interns.forEach((intern) => {
+      let internEmail = intern.getEmail();
       internTemplate += `<div class="max-w-sm m-2 p-6 bg-white border border-[#002500] rounded-lg shadow-[#002500]"> 
       <div>${intern.getName()}</div>
       <div class="text-sm text-gray-500">Intern</div>
       <div>ID: ${intern.getID()}</div>
-      <div>Email: ${intern.getEmail()}</div>
+      <div><a href:"mailto:${internEmail}">Email: ${intern.getEmail()}</a></div>
       <div>School: ${intern.getSchool()}</div>
       </div>`;
     });
   }
-
+  // main document html
   const document = `<!DOCTYPE html>
   <html lang="en">
   <head>
@@ -169,7 +173,7 @@ function createTeam() {
       type: "list",
       message: "Do you want to add an Engineer or an intern?",
       name: "main",
-      choices: ["Intern", "Engineer", "Finish"],
+      choices: ["Engineer", "Intern", "Finish"],
     })
     .then((response) => {
       let type = response.main;
